@@ -3,6 +3,7 @@ package binaryTree;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class BinaryTree<E> {
 	private BinaryNode<E> root;
@@ -89,7 +90,7 @@ public class BinaryTree<E> {
 	}
 
 	public void printLevelorder() {
-		Queue<BinaryNode<E>> queue = new PriorityQueue<BinaryNode<E>>();
+		Queue<BinaryNode<E>> queue = new LinkedBlockingQueue<BinaryNode<E>>();
 		BinaryNode<E> node = root;
 		queue.offer(node);
 		while(! queue.isEmpty()) {
@@ -98,9 +99,40 @@ public class BinaryTree<E> {
 				queue.offer(node.getLeft());
 			if (node.getRight() != null)
 				queue.offer(node.getRight());
-			System.out.println(node.toString() + " ");
+			System.out.print(node.toString() + " ");
 		}
 	}
 
-
+	public void getMaxDepth() {
+		System.out.println(getMaxDepth(root));
+	}
+	
+	private int getMaxDepth(BinaryNode<E> node) {
+		int left = 0, right = 0;
+		if (node.getLeft() != null)
+			left = getMaxDepth(node.getLeft());
+		if (node.getRight() != null)
+			right = getMaxDepth(node.getRight());
+		return 1 + Math.max(left, right);
+	}
+	
+	public void getMaxDepth2() {
+		Queue<BinaryNode<E>> queue = new LinkedBlockingQueue<BinaryNode<E>>();
+		BinaryNode<E> node = root;
+		int depth = 0;
+		queue.offer(node);
+		while(! queue.isEmpty()) {
+			Queue<BinaryNode<E>> queue2 = new LinkedBlockingQueue<BinaryNode<E>>();
+			while(! queue.isEmpty()) {
+				node = queue.poll();
+				if(node.getLeft() != null)
+					queue2.offer(node.getLeft());
+				if (node.getRight() != null)
+					queue2.offer(node.getRight());			
+			}
+			queue = queue2;
+			depth += 1;
+		}
+		System.out.println(depth);
+	}
 }
